@@ -1,4 +1,4 @@
-# Name: Lane Harper
+# Name: Team 1
 # Description: Software Engineering Project
 # Date: Fall 2025
 
@@ -638,4 +638,5 @@ while c.keep_going:
 	c.update()
 	m.update()
 	v.update()
+
 	sleep(sleep_time)
