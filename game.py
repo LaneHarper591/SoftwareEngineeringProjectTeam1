@@ -159,6 +159,7 @@ class Model():
 			self.temp_code_name = rows[0][1] 
 			self.need_code_name = False
 		self.cursor.execute("SELECT * FROM players")
+		print("Current SQL contents (before insertion of current id):")
 		rows = self.cursor.fetchall()
 		for row in rows:
 			print(row)
