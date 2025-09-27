@@ -7,3 +7,10 @@ Team Members -
   Louis Torabi - louistorabi
 
   Installation Instructions - 
+
+Execute install.sh
+Follow Prompts on Terminal
+
+While running - 
+Use 'esc' key to end program
+Follow ui directions to interact with program
