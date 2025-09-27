@@ -158,6 +158,11 @@ class Model():
 		if (rows):
 			self.temp_code_name = rows[0][1] 
 			self.need_code_name = False
+		self.cursor.execute("SELECT * FROM players")
+		rows = self.cursor.fetchall()
+		for row in rows:
+			print(row)
+
 		
 
 	# Enter code name into database
