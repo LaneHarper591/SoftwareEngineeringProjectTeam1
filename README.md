@@ -1,5 +1,5 @@
 # SoftwareEngineeringProjectTeam1
-Repository for Software Engineering Project Code
+Repository for Team 1 Software Engineering Project Code
 
 Team Members - 
   Lane Harper - LaneHarper591
@@ -8,9 +8,11 @@ Team Members -
 
   Installation Instructions - 
 
+Give permission to execute install.sh (enter 'chmod +x install.sh' in terminal)
 Execute install.sh
 Follow Prompts on Terminal
 
-While running - 
+  While running - 
+
 Use 'esc' key to end program
 Follow ui directions to interact with program
