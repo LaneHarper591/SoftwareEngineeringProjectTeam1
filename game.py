@@ -82,7 +82,12 @@ class Model():
 		self.temp_code_name = ""
 
 		# Creating Required SQL DB connections
-		self.conn = psycopg2.connect({'dbname': 'photon', 'user': 'student',})
+		connection_params = {
+			'dbname': 'photon',
+  			'user': 'student',
+		}
+
+		self.conn = psycopg2.connect(connection_params)
 		self.cursor = self.conn.cursor()
 
 		# If game is currently in progress
