@@ -151,7 +151,7 @@ class Model():
 		# Check if id is in database; if in, set temp_code_name to code name in database
 		sql_query = "SELECT * FROM players WHERE id LIKE %s;"
 		id_str = str(id)
-		self.cursor.execute(sql_query, id_str)
+		self.cursor.execute(sql_query, (id_str,))
 		rows = cursor.fetchall()
 		# Set this to failure and then change it if we succeed
 		self.need_code_name = True
