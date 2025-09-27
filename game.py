@@ -83,7 +83,7 @@ class Model():
 
 		# Creating Required SQL DB connections
 		self.conn = psycopg2.connect({'dbname': 'photon', 'user': 'student',})
-	    self.cursor = conn.cursor()
+		self.cursor = self.conn.cursor()
 
 		# If game is currently in progress
 		self.game_active = False
