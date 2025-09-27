@@ -165,7 +165,7 @@ class Model():
 	def enter_code_name(self, code_name):
 #		# Enter id and code name into database
 		sql_query = "INSERT INTO players (id, codename) VALUES (%s, %s);"
-		self.cursor.execute(sql_query,(id, code_name))
+		self.cursor.execute(sql_query,(self.temp_id, code_name))
 		self.cursor.commit()
 		# create temporary code name
 		self.temp_code_name = code_name
