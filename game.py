@@ -154,11 +154,10 @@ class Model():
 		rows = self.cursor.fetchall()
 		# Set this to failure and then change it if we succeed
 		self.need_code_name = True
-		# If id is a number like 1, LIKE will match all numbers starting with 1
-		for row in rows:
-			if (id_str == row[0]):
-				self.temp_code_name = row[1] 
-				self.need_code_name = False
+		# rows evaluates to true if there is anything in the list, and the only element in the list must be the correct tuple
+		if (rows):
+			self.temp_code_name = rows[0][1] 
+			self.need_code_name = False
 		
 
 	# Enter code name into database
