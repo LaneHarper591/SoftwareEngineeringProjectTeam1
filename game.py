@@ -87,7 +87,7 @@ class Model():
   			'user': 'student',
 		}
 
-		self.conn = psycopg2.connect(connection_params)
+		self.conn = psycopg2.connect(**connection_params)
 		self.cursor = self.conn.cursor()
 
 		# If game is currently in progress
