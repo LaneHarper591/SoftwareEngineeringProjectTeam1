@@ -150,13 +150,13 @@ class Model():
 		self.temp_id = id
 		# Check if id is in database; if in, set temp_code_name to code name in database
 		sql_query = "SELECT * FROM players WHERE id LIKE %s;"
-		self.cursor.execute(sql_query, (string)id)
+		self.cursor.execute(sql_query, str(id))
 		rows = cursor.fetchall()
 		# Set this to failure and then change it if we succeed
 		self.need_code_name = True
 		# If id is a number like 1, LIKE will match all numbers starting with 1
 		for row in rows:
-			if (id == row[0]):
+			if (str(id) == row[0]):
 				self.temp_code_name = row[1] 
 				self.need_code_name = False
 		
@@ -165,7 +165,7 @@ class Model():
 	def enter_code_name(self, code_name):
 #		# Enter id and code name into database
 		sql_query = "INSERT INTO players (id, codename) VALUES (%s, %s);"
-		self.cursor.execute(sql_query,(self.temp_id, code_name))
+		self.cursor.execute(sql_query,(self.temp_id, str(code_name)))
 		self.cursor.commit()
 		# create temporary code name
 		self.temp_code_name = code_name
