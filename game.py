@@ -150,7 +150,7 @@ class Model():
 		# Set this to failure and then change it if we succeed
 		self.need_code_name = True
 		# If id is a number like 1, LIKE will match all numbers starting with 1
-		for row in rows
+		for row in rows:
 			if (id == row[0])
 				self.temp_code_name = row[1] 
 				self.need_code_name = False
