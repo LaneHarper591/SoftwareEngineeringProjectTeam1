@@ -4,9 +4,11 @@
 
 import pygame
 import time
+import psycopg2
 
 from pygame.locals import*
 from time import sleep
+from psycopg2 import sql
 
 # Screen indices - used to switch view between screens
 splash_index = 0
@@ -79,6 +81,10 @@ class Model():
 		self.temp_id = -1
 		self.temp_code_name = ""
 
+		# Creating Required SQL DB connections
+		self.conn = psycopg2.connect({'dbname': 'photon', 'user': 'student',})
+	    self.cursor = conn.cursor()
+
 		# If game is currently in progress
 		self.game_active = False
 		# Game timer
@@ -138,14 +144,24 @@ class Model():
 
 		self.temp_id = id
 		# Check if id is in database; if in, set temp_code_name to code name in database
-#		
-		# else
+		sql_query = "SELECT * FROM players WHERE id LIKE %s;"
+		self.cursor.execute(sql_query, id)
+		rows = cursor.fetchall()
+		# Set this to failure and then change it if we succeed
 		self.need_code_name = True
+		# If id is a number like 1, LIKE will match all numbers starting with 1
+		for row in rows
+			if (id == row[0])
+				self.temp_code_name = row[1] 
+				self.need_code_name = False
+		
 
 	# Enter code name into database
 	def enter_code_name(self, code_name):
 #		# Enter id and code name into database
-
+		sql_query = "INSERT INTO players (id, codename) VALUES (%s, %s);"
+		self.cursor.execute(sql_query,(self.temp_id, code_name))
+		self.cursor.commit()
 		# create temporary code name
 		self.temp_code_name = code_name
 
@@ -640,3 +656,5 @@ while c.keep_going:
 	v.update()
 
 	sleep(sleep_time)
+m.conn.close()
+m.cursor.close()
