@@ -106,8 +106,9 @@ class Model():
 			self.green_players.append(Player("", "", ""))
 			i += 1
 		
-		# Network IP
+		# Network IP + UDP TX
 		self.network = default_network
+		self.udp_tx = PythonUdpClient(dest_ip=self.network, dest_port=7500, enable_broadcast=True)
 
 	def update(self):
 		# Update timer until 3 seconds have passed
@@ -183,14 +184,22 @@ class Model():
 			self.red_players[self.num_red_players].id = self.temp_id
 			self.red_players[self.num_red_players].code_name = self.temp_code_name
 			self.red_players[self.num_red_players].equip_id = equip_id
-			self.num_red_players += 1
+			self.num_red_players += 1 
+        	try:
+            	self.udp_tx.send_int(equip_id)
+        	except Exception as e:
+            	print(f"UDP send failed: {e}")
+		
 		elif ((equip_id % 2 == 0) and (self.num_green_players <= self.num_players_per_team)): # Do not add a player if there are already 15
 			self.green_players[self.num_green_players].id = self.temp_id
 			self.green_players[self.num_green_players].code_name = self.temp_code_name
 			self.green_players[self.num_green_players].equip_id = equip_id
 			self.num_green_players += 1
 		# Broadcast player id
-	
+        	try:
+            	self.udp_tx.send_int(equip_id)
+        	except Exception as e:
+            	print(f"UDP send failed: {e}")
 	def clear_players(self):
 		i = 0
 		while (i < self.num_players_per_team):
@@ -212,6 +221,10 @@ class Model():
 #	# Change Network IP
 	def change_network(self, network):
 		self.network = network
+		try:
+			self.udp_tx.set_destination(network, 7500)
+		except Exception as e:
+			print(f"Failed to set UDP destination: {e}")
 
 class View():
 	def __init__(self, model):
@@ -670,4 +683,5 @@ while c.keep_going:
 	sleep(sleep_time)
 m.conn.close()
 m.cursor.close()
+
 
