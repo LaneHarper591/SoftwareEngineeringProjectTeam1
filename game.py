@@ -9,6 +9,8 @@ import psycopg2
 from pygame.locals import*
 from time import sleep
 from psycopg2 import sql
+from udp_handler import UdpHandler
+from python_udpclient import PythonUdpClient
 
 # Screen indices - used to switch view between screens
 splash_index = 0
@@ -668,3 +670,4 @@ while c.keep_going:
 	sleep(sleep_time)
 m.conn.close()
 m.cursor.close()
+
