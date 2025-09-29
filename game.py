@@ -185,21 +185,23 @@ class Model():
 			self.red_players[self.num_red_players].code_name = self.temp_code_name
 			self.red_players[self.num_red_players].equip_id = equip_id
 			self.num_red_players += 1 
-        	try:
-            	self.udp_tx.send_int(equip_id)
-        	except Exception as e:
-            	print(f"UDP send failed: {e}")
+			# Broadcast player id
+			try:
+				self.udp_tx.send_int(equip_id)
+			except Exception as e:
+				print(f"UDP send failed: {e}")
 		
 		elif ((equip_id % 2 == 0) and (self.num_green_players <= self.num_players_per_team)): # Do not add a player if there are already 15
 			self.green_players[self.num_green_players].id = self.temp_id
 			self.green_players[self.num_green_players].code_name = self.temp_code_name
 			self.green_players[self.num_green_players].equip_id = equip_id
 			self.num_green_players += 1
-		# Broadcast player id
-        	try:
-            	self.udp_tx.send_int(equip_id)
-        	except Exception as e:
-            	print(f"UDP send failed: {e}")
+			# Broadcast player id
+			try:
+				self.udp_tx.send_int(equip_id)
+			except Exception as e:
+				print(f"UDP send failed: {e}")
+				
 	def clear_players(self):
 		i = 0
 		while (i < self.num_players_per_team):
@@ -683,5 +685,6 @@ while c.keep_going:
 	sleep(sleep_time)
 m.conn.close()
 m.cursor.close()
+
 
 
