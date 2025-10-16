@@ -359,20 +359,20 @@ class View():
 		# F2 - None
 		self.funct_keys_boxes.append(Funct_Box(self.funct_keys_boxes_x,self.funct_keys_boxes_y,self.funct_keys_boxes_w,self.funct_keys_boxes_h,"","",""))
 		self.funct_keys_boxes_x += self.funct_keys_boxes_w
-		# F3 - Start Game
-		self.funct_keys_boxes.append(Funct_Box(self.funct_keys_boxes_x,self.funct_keys_boxes_y,self.funct_keys_boxes_w,self.funct_keys_boxes_h,"F3","Start","Game"))
-		self.funct_keys_boxes_x += self.funct_keys_boxes_w
-		# F4 - Change Network IP
-		self.funct_keys_boxes.append(Funct_Box(self.funct_keys_boxes_x,self.funct_keys_boxes_y,self.funct_keys_boxes_w,self.funct_keys_boxes_h,"F4","Edit","Network IP"))
-		self.funct_keys_boxes_x += self.funct_keys_boxes_w
-		# F5 - Reset Network IP
-		self.funct_keys_boxes.append(Funct_Box(self.funct_keys_boxes_x,self.funct_keys_boxes_y,self.funct_keys_boxes_w,self.funct_keys_boxes_h,"F5","Reset IP","To Default"))
-		self.funct_keys_boxes_x += self.funct_keys_boxes_w
-		# F6 - None
+		# F3 - None
 		self.funct_keys_boxes.append(Funct_Box(self.funct_keys_boxes_x,self.funct_keys_boxes_y,self.funct_keys_boxes_w,self.funct_keys_boxes_h,"","",""))
 		self.funct_keys_boxes_x += self.funct_keys_boxes_w
-		# F7 - None
+		# F4 - None
 		self.funct_keys_boxes.append(Funct_Box(self.funct_keys_boxes_x,self.funct_keys_boxes_y,self.funct_keys_boxes_w,self.funct_keys_boxes_h,"","",""))
+		self.funct_keys_boxes_x += self.funct_keys_boxes_w
+		# F5 - Start Game
+		self.funct_keys_boxes.append(Funct_Box(self.funct_keys_boxes_x,self.funct_keys_boxes_y,self.funct_keys_boxes_w,self.funct_keys_boxes_h,"F5","Start","Game"))
+		self.funct_keys_boxes_x += self.funct_keys_boxes_w
+		# F6 - Change Network IP
+		self.funct_keys_boxes.append(Funct_Box(self.funct_keys_boxes_x,self.funct_keys_boxes_y,self.funct_keys_boxes_w,self.funct_keys_boxes_h,"F6","Edit","Network IP"))
+		self.funct_keys_boxes_x += self.funct_keys_boxes_w
+		# F7 - Reset Network IP
+		self.funct_keys_boxes.append(Funct_Box(self.funct_keys_boxes_x,self.funct_keys_boxes_y,self.funct_keys_boxes_w,self.funct_keys_boxes_h,"F7","Reset IP","To Default"))
 		self.funct_keys_boxes_x += self.funct_keys_boxes_w
 		# F8 - None
 		self.funct_keys_boxes.append(Funct_Box(self.funct_keys_boxes_x,self.funct_keys_boxes_y,self.funct_keys_boxes_w,self.funct_keys_boxes_h,"","",""))
@@ -515,19 +515,23 @@ class Controller():
 				elif event.type == KEYDOWN:
 					if event.key == K_ESCAPE:
 						self.keep_going = False
+					elif (event.key == K_LSHIFT) or (event.key == K_RSHIFT):
+						self.shift = True
 				elif event.type == pygame.KEYUP: #self is keyReleased!
+					if (event.key == K_LSHIFT) or (event.key == K_RSHIFT):
+						self.shift = False
 					# Add player if key is F1 and if model needs a player id (prevents starting another player adding procedure) and network popup is not on screen
 					if (event.key == K_F1) and (self.model.need_id == True) and (self.view.network_popup_box.popup == False):
 						self.view.id_popup_box.popup = True
 						self.model.need_id = False
-					# Start game if F3 is pressed
-					elif event.key == K_F3:
+					# Start game if F5 is pressed
+					elif event.key == K_F5:
 						self.model.start_game()
-					# Prompt for new network ip if F4 is pressed and no other popups are on screen
-					elif (event.key == K_F4) and (self.view.network_popup_box.popup == False) and (self.view.id_popup_box.popup == False) and (self.view.code_name_popup_box.popup == False) and ((self.view.equip_id_popup_box.popup == False)):
+					# Prompt for new network ip if F6 is pressed and no other popups are on screen
+					elif (event.key == K_F6) and (self.view.network_popup_box.popup == False) and (self.view.id_popup_box.popup == False) and (self.view.code_name_popup_box.popup == False) and ((self.view.equip_id_popup_box.popup == False)):
 						self.view.network_popup_box.popup = True
 					# Reset network ip to default (127.0.0.1) if F6 is pressed and network popup is not on screen
-					elif (event.key == K_F5) and (self.view.network_popup_box.popup == False):
+					elif (event.key == K_F7) and (self.view.network_popup_box.popup == False):
 						self.model.change_network(default_network)
 					# Clear players from tables if F12 is pressed
 					elif event.key == K_F12:
@@ -591,8 +595,17 @@ class Controller():
 								self.view.code_name_popup_box.input_feedback = ""
 								# Receive equipment id from user
 								self.view.equip_id_popup_box.popup = True
+						# Prevent key's name from being input into popup
+						elif (event.key == K_LSHIFT) or (event.key == K_RSHIFT):
+							{}
 						else:
-							self.view.code_name_popup_box.input_feedback += pygame.key.name(event.key)
+							# Input lowercase letters
+							if (self.shift == False):
+								self.view.code_name_popup_box.input_feedback += pygame.key.name(event.key)
+							# Input uppercase letters
+							else:
+								char = pygame.key.name(event.key)
+								self.view.code_name_popup_box.input_feedback += char.capitalize()
 					# Enter characters into equipment id popup
 					elif (self.view.equip_id_popup_box.popup):
 						if (event.key == K_BACKSPACE):
