@@ -112,7 +112,7 @@ class Model():
 		#countdown (pregame)
 		self.countdown_active = False
 		self.countdown_timer = 0 
-		self.countdown_length = 3
+		self.countdown_length = 30
 
 
 		# Create Highest Scorer, for the player with the most points at any given time, updated when an event happens (ie, someone tags someone)
@@ -136,33 +136,33 @@ class Model():
 			self.splash_timer += 1
 		else:
    	 		# 1) Pre-game countdown
-    		if self.countdown_active:
-        		self.screen_index = countdown_screen_index
-        		if (self.countdown_timer < (self.countdown_length / sleep_time)):
-            		self.countdown_timer += 1
-        		else:
+			if self.countdown_active:
+				self.screen_index = countdown_screen_index
+				if (self.countdown_timer < (self.countdown_length / sleep_time)):
+					self.countdown_timer += 1
+				else:
             		# countdown finished , switch to action
-            		self.countdown_active = False
-            		self.game_active = True
-            		self.game_timer = 0
-            		self.screen_index = play_action_index  # go to the action screen (index 3)
+					self.countdown_active = False
+					self.game_active = True
+					self.game_timer = 0
+					self.screen_index = game_screen_index  # go to the action screen (index 3)
 
-    	# 2) Game action (timer-based)
-    		elif self.game_active:
-       	 # show action screen while the game is running
-        		self.screen_index = play_action_index
-        		if (self.game_timer < (self.game_length / sleep_time)):
-            		self.game_timer += 1
-        		else:
-            	# game over -> reset
-            		self.game_timer = 0
-            		self.game_active = False
-            		self.clear_players()
-            		self.screen_index = player_screen_index
+			# 2) Game action (timer-based)
+			elif self.game_active:
+				# show action screen while the game is running
+				self.screen_index = game_screen_index
+				if (self.game_timer < (self.game_length / sleep_time)):
+					self.game_timer += 1
+				else:
+					# game over -> reset
+					self.game_timer = 0
+					self.game_active = False
+					self.clear_players()
+					self.screen_index = player_screen_index
 
-    # 3) Idle: player entry
-    		else:
-        		self.screen_index = player_screen_index
+			# 3) Idle: player entry
+			else:
+				self.screen_index = player_screen_index
 	
 	def display_red_players(self):
 		print("Displaying Red Team:")
