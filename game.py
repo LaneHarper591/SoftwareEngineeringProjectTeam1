@@ -736,17 +736,27 @@ class Controller():
 							if (self.view.id_popup_box.input_feedback == ""):
 								{}
 							else:
-								# Remove popup
-								self.view.id_popup_box.popup = False
-								# Check if id is in database
-								self.model.check_id(int(self.view.id_popup_box.input_feedback))
-								# clear feedback
-								self.view.id_popup_box.input_feedback = ""
-								# Receive codename from user if not in database
-								self.view.code_name_popup_box.popup = self.model.need_code_name
-								# Receive equipment id from user if code name already exists
-								if (self.view.code_name_popup_box.popup == False):
-									self.view.equip_id_popup_box.popup = True
+								# Ensure there are no duplicate player ids
+								duplicate = False
+								i = 0
+								while (i < self.model.num_players_per_team and duplicate == False):
+									if (int(self.view.id_popup_box.input_feedback) == self.model.red_players[i].id):
+										duplicate = True
+									elif (int(self.view.id_popup_box.input_feedback) == self.model.green_players[i].id):
+										duplicate = True
+									i += 1
+								if (duplicate == False):
+									# Remove popup
+									self.view.id_popup_box.popup = False
+									# Check if id is in database
+									self.model.check_id(int(self.view.id_popup_box.input_feedback))
+									# clear feedback
+									self.view.id_popup_box.input_feedback = ""
+									# Receive codename from user if not in database
+									self.view.code_name_popup_box.popup = self.model.need_code_name
+									# Receive equipment id from user if code name already exists
+									if (self.view.code_name_popup_box.popup == False):
+										self.view.equip_id_popup_box.popup = True
 						# prevent characters other than 0 to 9
 						elif (event.key != K_0) and (event.key != K_1) and (event.key != K_2) and (event.key != K_3) and (event.key != K_4) and (event.key != K_5) and (event.key != K_6) and (event.key != K_7) and (event.key != K_8) and (event.key != K_9):
 							{}
@@ -805,61 +815,7 @@ class Controller():
 							self.view.equip_id_popup_box.input_feedback += pygame.key.name(event.key)
 			keys = pygame.key.get_pressed()
 
-# # Database code
-# import psycopg2
-# from psycopg2 import sql
-# # Define connection parameters
-# connection_params = {
-#     'dbname': 'photon',
-#     'user': 'student',
-#     #'password': 'student',
-#     #'host': 'localhost',
-#     #'port': '5432'
-# }
-
-# try:
-# 	# Connect to PostgreSQL
-#     conn = psycopg2.connect(**connection_params)
-#     cursor = conn.cursor()
-
-#     # Execute a query
-#     cursor.execute("SELECT version();")
-
-#     # Fetch and display the result
-#     version = cursor.fetchone()
-#     print(f"Connected to - {version}")
-
-#     # Insert two players
-#     cursor.execute('''
-#         INSERT INTO players (id, codename)
-#         VALUES (%s, %s);
-#     ''', ('1', 'Shark'))
-
-# 	# cursor.execute('''
-# 	# 	INSERT INTO players (id, codename)
-# 	# 	VALUES (%s, %s);
-# 	# ''', ('2', 'Lazer'))
-
-#     # Commit the changes
-#     conn.commit()
-
-#     # Fetch and display data from the table
-#     cursor.execute("SELECT * FROM players;")
-#     rows = cursor.fetchall()
-#     for row in rows:
-#         print(row)
-
-# except Exception as error:
-#     print(f"Error connecting to PostgreSQL database: {error}")
-
-# finally:
-#     # Close the cursor and connection
-#     if cursor:
-#         cursor.close()
-#     if conn:
-#         conn.close()
-
-# Running the code code
+# Running the code
 pygame.init()
 m = Model()
 v = View(m)
@@ -872,6 +828,7 @@ while c.keep_going:
 	sleep(sleep_time)
 m.conn.close()
 m.cursor.close()
+
 
 
 
