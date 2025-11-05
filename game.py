@@ -243,8 +243,10 @@ class Model():
 		while (i < self.num_players_per_team):
 			self.red_players[i].id = ""
 			self.red_players[i].code_name = ""
+			self.red_players[i].equip_id = ""
 			self.green_players[i].id = ""
 			self.green_players[i].code_name = ""
+			self.green_players[i].equip_id = ""
 			i += 1
 		self.num_red_players = 0
 		self.num_green_players = 0
@@ -799,15 +801,25 @@ class Controller():
 							if (self.view.equip_id_popup_box.input_feedback == ""):
 								{}
 							else:
-								self.view.equip_id_popup_box.popup = False
-								# Enter player into game
-								self.model.add_player(int(self.view.equip_id_popup_box.input_feedback))
-								# Clear feedback
-								self.view.equip_id_popup_box.input_feedback = ""
-								# Remove popup
-								self.view.equip_id_popup_box.popup = False
-								# Allow new player to be entered
-								self.model.need_id = True
+								# Ensure there are no duplicate equipment ids
+								duplicate = False
+								i = 0
+								while (i < self.model.num_players_per_team and duplicate == False):
+									if (int(self.view.equip_id_popup_box.input_feedback) == self.model.red_players[i].equip_id):
+										duplicate = True
+									elif (int(self.view.equip_id_popup_box.input_feedback) == self.model.green_players[i].equip_id):
+										duplicate = True
+									i += 1
+								if (duplicate == False):
+									self.view.equip_id_popup_box.popup = False
+									# Enter player into game
+									self.model.add_player(int(self.view.equip_id_popup_box.input_feedback))
+									# Clear feedback
+									self.view.equip_id_popup_box.input_feedback = ""
+									# Remove popup
+									self.view.equip_id_popup_box.popup = False
+									# Allow new player to be entered
+									self.model.need_id = True
 						# prevent characters other than 0 to 9
 						elif (event.key != K_0) and (event.key != K_1) and (event.key != K_2) and (event.key != K_3) and (event.key != K_4) and (event.key != K_5) and (event.key != K_6) and (event.key != K_7) and (event.key != K_8) and (event.key != K_9):
 							{}
@@ -828,6 +840,8 @@ while c.keep_going:
 	sleep(sleep_time)
 m.conn.close()
 m.cursor.close()
+
+
 
 
 
