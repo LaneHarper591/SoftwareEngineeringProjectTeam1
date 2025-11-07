@@ -166,12 +166,9 @@ class Model():
 					self.game_timer += 1
 				else:
 					# game over -> reset
-<<<<<<< HEAD
 					self.game_timer = 0
 					self.udp_tx.end_game()
-=======
 					print("Game Ending")
->>>>>>> db9e4ba7737c80b5f9de0e5a2b553e1a5d1205e6
 					self.game_active = False
 					self.game_over = True
 
@@ -385,14 +382,10 @@ class Model():
 		self.countdown_active = True
 		self.countdown_timer = 0
 		self.screen_index = countdown_screen_index
-<<<<<<< HEAD
 		self.udp_tx.start_game()
 		# Game code
 
 
-
-=======
->>>>>>> db9e4ba7737c80b5f9de0e5a2b553e1a5d1205e6
 	
 	# Change Network IP
 	def change_network(self, network):

@@ -6,7 +6,7 @@ class UdpHandler:
         self.listen_port = listen_port
         self.buffer_size = buffer_size
 
-        self.sock = socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+        self.sock = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
         self.sock.bind((self.listen_ip, self.listen_port))
         self.sock.setblocking(False)
 
