@@ -157,11 +157,21 @@ class Model():
 				shot,shooter = self.udpIn.poll()
 				if (shot != None):
 					shotId = 0
+					shooterId = 0
 					if (len(shot) == 4):
-						shotId = str(shot[2])+str(shot[3])
+						if (shot[1] == ":"):
+							shotId = str(shot[2])+str(shot[3])
+							shooterId = str(shot[0])
+						else:
+							shotId = str(shot[3])
+							shooterId = str(shot[0])+str(shot[1])
+					elif (len(shot) == 5):
+						shotId = str(shot[3])+str(shot[4])
+						shooterId = str(shot[0])+str(shot[1])
 					else:
 						shotId = str(shot[2])
-					self.ProcessUDP(shotId, shot[0])
+						shooterId = str(shot[0])
+					self.ProcessUDP(shotId, shooterId)
 				if (self.game_timer < (self.game_length / sleep_time)):
 					self.game_timer += 1
 				else:
