@@ -67,10 +67,6 @@ class Funct_Box(Box):
 
 class Model():
 	def __init__(self):
-
-
-
-		
 		# Start game with splash screen
 		self.screen_index = splash_index
 		# Timer used to change from splash screen to player entry screen
@@ -133,7 +129,10 @@ class Model():
 		# Network IP + UDP TX
 		self.network = default_network
 		self.udp_tx = PythonUdpClient(dest_ip=self.network, dest_port=7500, enable_broadcast=True)
-
+		
+		# Used to return to player entry screen after game
+		self.game_over = False
+		
 	def update(self):
 		# Update timer until 3 seconds have passed
 		if (self.splash_timer < (3 / sleep_time)):
@@ -167,15 +166,19 @@ class Model():
 					self.game_timer += 1
 				else:
 					# game over -> reset
+<<<<<<< HEAD
 					self.game_timer = 0
 					self.udp_tx.end_game()
+=======
+					print("Game Ending")
+>>>>>>> db9e4ba7737c80b5f9de0e5a2b553e1a5d1205e6
 					self.game_active = False
-					self.clear_players()
-					self.screen_index = player_screen_index
+					self.game_over = True
 
 			# 3) Idle: player entry
-			else:
+			elif (self.countdown_active == False) and (self.game_active == False) and (self.game_over == False):
 				self.screen_index = player_screen_index
+				
 	
 	def updateEvents(self, newEventString):
 		# should push all current events in self.eventList to the next position, overwriting the last one, then put newEventString in the first slot
@@ -332,7 +335,7 @@ class Model():
 
 	# Enter code name into database
 	def enter_code_name(self, code_name):
-#		# Enter id and code name into database
+		# Enter id and code name into database
 		sql_query = "INSERT INTO players (id, codename) VALUES (%s, %s);"
 		self.cursor.execute(sql_query,(self.temp_id, code_name))
 		self.conn.commit()
@@ -382,13 +385,16 @@ class Model():
 		self.countdown_active = True
 		self.countdown_timer = 0
 		self.screen_index = countdown_screen_index
+<<<<<<< HEAD
 		self.udp_tx.start_game()
 		# Game code
 
 
 
+=======
+>>>>>>> db9e4ba7737c80b5f9de0e5a2b553e1a5d1205e6
 	
-#	# Change Network IP
+	# Change Network IP
 	def change_network(self, network):
 		self.network = network
 		try:
@@ -533,7 +539,7 @@ class View():
 		# F1 - Add Player
 		self.funct_keys_boxes.append(Funct_Box(self.funct_keys_boxes_x,self.funct_keys_boxes_y,self.funct_keys_boxes_w,self.funct_keys_boxes_h,"F1","Add","Player"))
 		self.funct_keys_boxes_x += self.funct_keys_boxes_w
-		# F2 - None
+		# F2 - Blank (Key is used to return to player entry screen after game)
 		self.funct_keys_boxes.append(Funct_Box(self.funct_keys_boxes_x,self.funct_keys_boxes_y,self.funct_keys_boxes_w,self.funct_keys_boxes_h,"","",""))
 		self.funct_keys_boxes_x += self.funct_keys_boxes_w
 		# F3 - None
@@ -566,6 +572,9 @@ class View():
 		# F12 - Clear Player
 		self.funct_keys_boxes.append(Funct_Box(self.funct_keys_boxes_x,self.funct_keys_boxes_y,self.funct_keys_boxes_w,self.funct_keys_boxes_h,"F12","Clear","Players"))
 		self.funct_keys_boxes_x += self.funct_keys_boxes_w
+		
+		# Use F2 to return to player entry screen after game
+		self.return_to_entry_box = Funct_Box(self.screen_w/2 - self.funct_keys_boxes_w/2, self.screen_h/2 - self.funct_keys_boxes_h, self.funct_keys_boxes_w, self.funct_keys_boxes_h, "Game Over", "Return", "using F2")
 
 	def update(self):
 		# Update Text boxes
@@ -597,7 +606,7 @@ class View():
 					# Draw text2
 					self.txt_surface = self.block_title_font.render(self.funct_keys_boxes[i].text2, True, self.white)  # Render text
 					self.screen.blit(self.txt_surface, (self.funct_keys_boxes[i].x + 5, self.funct_keys_boxes[i].y + 25))  # Position text
-					# Draw text2
+					# Draw text3
 					self.txt_surface = self.block_title_font.render(self.funct_keys_boxes[i].text3, True, self.white)  # Render text
 					self.screen.blit(self.txt_surface, (self.funct_keys_boxes[i].x + 5, self.funct_keys_boxes[i].y + 40))  # Position text
 				i += 1
@@ -796,6 +805,20 @@ class View():
 				#self.screen.blit(self.txt_surface, (10, 10))    						sets position
 			#how to make font
 				#pygame.font.Font(None, self.font_size)
+			
+			# Display return button information at end of game
+			if (self.model.game_over == True):
+				pygame.draw.rect(self.screen, self.white, self.return_to_entry_box.text_box, 1)
+				# Draw text1
+				self.txt_surface = self.block_title_font.render(self.return_to_entry_box.text, True, self.white)  # Render text
+				self.screen.blit(self.txt_surface, (self.return_to_entry_box.text_box.x + 5, self.return_to_entry_box.text_box.y + 5))  # Position text
+				# Draw text2
+				self.txt_surface = self.block_title_font.render(self.return_to_entry_box.text2, True, self.white)  # Render text
+				self.screen.blit(self.txt_surface, (self.return_to_entry_box.text_box.x + 5, self.return_to_entry_box.text_box.y + 25))  # Position text
+				# Draw text3
+				self.txt_surface = self.block_title_font.render(self.return_to_entry_box.text3, True, self.white)  # Render text
+				self.screen.blit(self.txt_surface, (self.return_to_entry_box.text_box.x + 5, self.return_to_entry_box.text_box.y + 40))  # Position text
+			
 		pygame.display.flip() # Puts images on screen
 
 class Controller():
@@ -808,12 +831,10 @@ class Controller():
 
 		if (self.model.screen_index == splash_index):
 			{}
-		elif (self.model.screen_index == player_screen_index):
+		else:
 			for event in pygame.event.get():
 				if event.type == QUIT:
 					self.keep_going = False
-				# elif event.type == pygame.MOUSEBUTTONUP:
-					# position = pygame.mouse.get_pos()
 				elif event.type == KEYDOWN:
 					if event.key == K_ESCAPE:
 						self.keep_going = False
@@ -823,20 +844,27 @@ class Controller():
 					if (event.key == K_LSHIFT) or (event.key == K_RSHIFT):
 						self.shift = False
 					# Add player if key is F1 and if model needs a player id (prevents starting another player adding procedure) and network popup is not on screen
-					if (event.key == K_F1) and (self.model.need_id == True) and (self.view.network_popup_box.popup == False):
+					if (event.key == K_F1) and (self.model.need_id == True) and (self.view.network_popup_box.popup == False) and (self.model.screen_index == player_screen_index):
 						self.view.id_popup_box.popup = True
 						self.model.need_id = False
+					# Return to player entry screen after game if F2 is pressed
+					elif (event.key == K_F2) and (self.model.game_over == True):
+						print("Returning to Player Entry Screen")
+						self.model.clear_players()
+						self.game_timer = 0
+						self.model.game_over = False
 					# Start game if F5 is pressed
-					elif event.key == K_F5:
+					elif (event.key == K_F5) and (self.model.screen_index == player_screen_index):
 						self.model.start_game()
 					# Prompt for new network ip if F6 is pressed and no other popups are on screen
-					elif (event.key == K_F6) and (self.view.network_popup_box.popup == False) and (self.view.id_popup_box.popup == False) and (self.view.code_name_popup_box.popup == False) and ((self.view.equip_id_popup_box.popup == False)):
+					elif (event.key == K_F6) and (self.view.network_popup_box.popup == False) and (self.view.id_popup_box.popup == False) and (self.view.code_name_popup_box.popup == False) and ((self.view.equip_id_popup_box.popup == False) and (self.model.screen_index == player_screen_index)):
 						self.view.network_popup_box.popup = True
 					# Reset network ip to default (127.0.0.1) if F6 is pressed and network popup is not on screen
-					elif (event.key == K_F7) and (self.view.network_popup_box.popup == False):
+					elif (event.key == K_F7) and (self.view.network_popup_box.popup == False) and (self.model.screen_index == player_screen_index):
+						print("Setting Network IP to " + default_network + ".")
 						self.model.change_network(default_network)
 					# Clear players from tables if F12 is pressed
-					elif event.key == K_F12:
+					elif (event.key == K_F12) and (self.model.screen_index == player_screen_index):
 						self.model.clear_players()
 					# Enter characters into network popup
 					elif (self.view.network_popup_box.popup):
