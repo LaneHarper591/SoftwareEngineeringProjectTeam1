@@ -157,12 +157,18 @@ class Model():
 				self.screen_index = game_screen_index
 				shot,shooter = self.udpIn.poll()
 				if (shot != None):
-					self.ProcessUDP(shot, shooter)
+					shotId = 0
+					if (len(shot) == 4):
+						shotId = str(shot[2])+str(shot[3])
+					else:
+						shotId = str(shot[2])
+					self.ProcessUDP(shotId, shot[0])
 				if (self.game_timer < (self.game_length / sleep_time)):
 					self.game_timer += 1
 				else:
 					# game over -> reset
 					self.game_timer = 0
+					self.udp_tx.end_game()
 					self.game_active = False
 					self.clear_players()
 					self.screen_index = player_screen_index
@@ -171,7 +177,7 @@ class Model():
 			else:
 				self.screen_index = player_screen_index
 	
-	def updateEvents(self, newEventString)
+	def updateEvents(self, newEventString):
 		# should push all current events in self.eventList to the next position, overwriting the last one, then put newEventString in the first slot
 		self.event_list[3] = self.event_list[2]
 		self.event_list[2] = self.event_list[1]
@@ -188,22 +194,24 @@ class Model():
 		self.event_list[0] = Event
 
 
-	def ProcessUDP(self, shot, shooter):
+	def ProcessUDP(self, shotIn, shooterIn):
+		shot = int(shotIn)
+		shooter = int(shooterIn)
 		shootername = self.getPlayerFromID(shooter)
-		if (shot == 53 or shot == 43):
+		if ((shot == 53) or (shot == 43)):
 			# person shot base, increment player's points by 100 and set base to true
-			givePoints(shooter, 100)
-			if (EquipID % 2 == 1):
+			self.givePoints(shooter, 100)
+			if (shooter % 2 == 1):
 				for player in self.red_players:
-					if (player.equip_id == EquipId):
+					if (player.equip_id == shooter):
 						player.base = 1
 			else:
 				for player in self.green_players:
-					if (player.equip_id == EquipId):
+					if (player.equip_id == shooter):
 						player.base = 1
 			Event = "" + str(shootername) + " has successfully captured the enemy base!" 
 			self.updateEvents(Event)
-			return
+			return None
 		# check for friendly fire
 		shotname = self.getPlayerFromID(shot)
 		if ((shot + shooter) % 2 == 1):
@@ -223,55 +231,55 @@ class Model():
 			
 		
 	def givePoints(self, recipientId, ammount):
-		if (EquipID % 2 == 1):
+		if (recipientId % 2 == 1):
 			for player in self.red_players:
-				if (player.equip_id == EquipId):
+				if (player.equip_id == recipientId):
 					if (ammount < 0):
 						# if equip id = highest scorer, find new highest scorer
 						player.score += ammount
-						if (highest_scorer != -1 and highest_scorer != player.equip_id):
+						if (self.highest_scorer != -1 and self.highest_scorer != player.equip_id):
 							{}
 						else:
 							self.findHighScorer()
 					else:
 						#easy
 						player.score += ammount
-						if (player.score >= highest_score):
+						if (player.score >= self.highest_score):
 							self.findHighScorer()
 		else:
 			for player in self.green_players:
-				if (player.equip_id == EquipId):
+				if (player.equip_id == recipientId):
 					if (ammount < 0):
 						# if equip id = highest scorer, find new highest scorer
 						player.score += ammount
-						if (highest_scorer != -1 and highest_scorer != player.equip_id):
+						if (self.highest_scorer != -1 and self.highest_scorer != player.equip_id):
 							{}
 						else:
 							self.findHighScorer()
 					else:
 						#easy
 						player.score += ammount
-						if (player.score >= highest_score):
+						if (player.score >= self.highest_score):
 							self.findHighScorer()
 		
-	def findHighScorer():
+	def findHighScorer(self):
 		self.highest_score = 0
 		self.highest_scorer = -1
 		for player in self.green_players:
 			if (player.score > self.highest_score):
 				self.highest_score = player.score
 				self.highest_scorer = player.equip_id
-			elif (player.score == self.highest_score)
+			elif (player.score == self.highest_score):
 				self.highest_scorer = -1
 		for player in self.red_players:
 			if (player.score > self.highest_score):
 				self.highest_score = player.score
 				self.highest_scorer = player.equip_id
-			elif (player.score == self.highest_score)
+			elif (player.score == self.highest_score):
 				self.highest_scorer = -1
 
 	def getPlayerFromID (self, EquipId):
-		if (EquipID % 2 == 1):
+		if (int(EquipId) % 2 == 1):
 			for player in self.red_players:
 				if (player.id == EquipId):
 					return (player.code_name)
@@ -374,7 +382,7 @@ class Model():
 		self.countdown_active = True
 		self.countdown_timer = 0
 		self.screen_index = countdown_screen_index
-
+		self.udp_tx.start_game()
 		# Game code
 
 
@@ -428,7 +436,7 @@ class View():
 
 		# Load Base Image
 		self.base = pygame.image.load("images/baseicon.jpg")
-		self.base_size = (18, 18)
+		self.base_size = (12, 12)
 		self.scaled_base_image = pygame.transform.scale(self.base, self.base_size)
 
 		# Edit current game text
@@ -555,7 +563,7 @@ class View():
 		# F11 - None
 		self.funct_keys_boxes.append(Funct_Box(self.funct_keys_boxes_x,self.funct_keys_boxes_y,self.funct_keys_boxes_w,self.funct_keys_boxes_h,"","",""))
 		self.funct_keys_boxes_x += self.funct_keys_boxes_w
-		# F12 - Clear Players
+		# F12 - Clear Player
 		self.funct_keys_boxes.append(Funct_Box(self.funct_keys_boxes_x,self.funct_keys_boxes_y,self.funct_keys_boxes_w,self.funct_keys_boxes_h,"F12","Clear","Players"))
 		self.funct_keys_boxes_x += self.funct_keys_boxes_w
 
@@ -722,7 +730,8 @@ class View():
 					self.screen.blit(self.scaled_base_image, ( red_team_x + 40 , initial_y + 1 + i*20))
 				# Do not display name if it it a flash tick and the player is a highest scorer
 				if self.model.highest_scorer == self.model.red_players[i].equip_id and self.model.game_timer % 25 > 12 :
-					{}
+					red_score = red_score + self.model.red_players[i].score
+					
 				else:
 					# prints name
 					self.txt_surface = pygame.font.Font(None, 20).render(self.model.red_players[i].code_name, True, (175, 0, 0))
@@ -742,7 +751,7 @@ class View():
 					self.screen.blit(self.scaled_base_image, ( green_team_x + 40 , initial_y + 1 + i*20))
 				# do not display highest scorer during flash frames
 				if self.model.highest_scorer == self.model.green_players[i].equip_id and self.model.game_timer % 25 > 12 :
-					{}
+					green_score = green_score + self.model.green_players[i].score
 				else:
 					# prints name
 					self.txt_surface = pygame.font.Font(None, 20).render(self.model.green_players[i].code_name, True, (0, 175, 0))
@@ -758,7 +767,7 @@ class View():
 			if red_score > green_score and self.model.game_timer % 25 > 12:
 				#display only green scoreboard
 				self.txt_surface = pygame.font.Font(None, 40).render(str(green_score).zfill(4), True, (0, 150, 0))
-				self.screen.blit(self.txt_surface, ( 900, 40))
+				self.screen.blit(self.txt_surface, ( 885, 40))
 			elif red_score < green_score and self.model.game_timer % 25 > 12:
 				#display only red scoreboard
 				self.txt_surface = pygame.font.Font(None, 40).render(str(red_score).zfill(4), True, (150, 0, 0))
@@ -957,6 +966,17 @@ while c.keep_going:
 	sleep(sleep_time)
 m.conn.close()
 m.cursor.close()
+
+
+
+
+
+
+
+
+
+
+
 
 
 
