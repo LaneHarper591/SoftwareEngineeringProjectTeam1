@@ -102,7 +102,7 @@ class Model():
   			'user': 'student',
 		}
 		# A List of strings for storing the events that have happened
-		self.event_list = ["1st event", "2nd event", "3rd event", "4th event"]
+		self.event_list = ["(6:00): Game Start", "", "", ""]
 
 		self.conn = psycopg2.connect(**connection_params)
 		self.cursor = self.conn.cursor()
