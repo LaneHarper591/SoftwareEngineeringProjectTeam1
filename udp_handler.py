@@ -21,7 +21,7 @@ class UdpHandler:
             self.sock.sendto(b"Hello UDP Client", addr)
             return msg,addr
         except BlockingIOError:
-            return None
+            return None,None
         
     def close(self):
         self.sock.close()

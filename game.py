@@ -88,6 +88,10 @@ class Model():
 		self.need_code_name = False
 		# self.need_equip_id = True
 
+		# UDP Listener
+		self.udpIn = UdpHandler()
+
+
 		# Temporary player creation variables
 		self.temp_id = -1
 		self.temp_code_name = ""
@@ -117,7 +121,7 @@ class Model():
 
 		# Create Highest Scorer, for the player with the most points at any given time, updated when an event happens (ie, someone tags someone)
 		self.highest_scorer = -1
-
+		self.highest_score = 0
 
 		# Initialize Arrays
 		i = 0
@@ -151,6 +155,9 @@ class Model():
 			elif self.game_active:
 				# show action screen while the game is running
 				self.screen_index = game_screen_index
+				shot,shooter = self.udpIn.poll()
+				if (shot != None):
+					self.ProcessUDP(shot, shooter)
 				if (self.game_timer < (self.game_length / sleep_time)):
 					self.game_timer += 1
 				else:
@@ -164,6 +171,116 @@ class Model():
 			else:
 				self.screen_index = player_screen_index
 	
+	def updateEvents(self, newEventString)
+		# should push all current events in self.eventList to the next position, overwriting the last one, then put newEventString in the first slot
+		self.event_list[3] = self.event_list[2]
+		self.event_list[2] = self.event_list[1]
+		self.event_list[1] = self.event_list[0]
+		timer_now = self.game_timer * sleep_time
+		countdown = self.game_length - timer_now
+		min = round(countdown // 60)
+		sec = round(countdown % 60)
+		if sec < 10 :
+			clock = str(min) + ":0" + str(sec)
+		else:
+			clock = str(min) + ":" + str(sec)
+		Event = "(" + clock + "): " + str(newEventString)
+		self.event_list[0] = Event
+
+
+	def ProcessUDP(self, shot, shooter):
+		shootername = self.getPlayerFromID(shooter)
+		if (shot == 53 or shot == 43):
+			# person shot base, increment player's points by 100 and set base to true
+			givePoints(shooter, 100)
+			if (EquipID % 2 == 1):
+				for player in self.red_players:
+					if (player.equip_id == EquipId):
+						player.base = 1
+			else:
+				for player in self.green_players:
+					if (player.equip_id == EquipId):
+						player.base = 1
+			Event = "" + str(shootername) + " has successfully captured the enemy base!" 
+			self.updateEvents(Event)
+			return
+		# check for friendly fire
+		shotname = self.getPlayerFromID(shot)
+		if ((shot + shooter) % 2 == 1):
+			# person hit enemy team member, give them 10 points
+			self.givePoints(shooter, 10)
+			self.udp_tx.send_int(shot)
+			Event = "" + str(shootername) + " has shot "+str(shotname)+"!"
+			self.updateEvents(Event)
+		else:
+			# hit an ally, reduce both scores by 10
+			self.givePoints(shooter, -10)
+			self.udp_tx.send_int(shooter)
+			self.givePoints(shot, -10)
+			self.udp_tx.send_int(shot)
+			Event = "" + str(shootername) + " has betrayed "+str(shotname)+"!"
+			self.updateEvents(Event)
+			
+		
+	def givePoints(self, recipientId, ammount):
+		if (EquipID % 2 == 1):
+			for player in self.red_players:
+				if (player.equip_id == EquipId):
+					if (ammount < 0):
+						# if equip id = highest scorer, find new highest scorer
+						player.score += ammount
+						if (highest_scorer != -1 and highest_scorer != player.equip_id):
+							{}
+						else:
+							self.findHighScorer()
+					else:
+						#easy
+						player.score += ammount
+						if (player.score >= highest_score):
+							self.findHighScorer()
+		else:
+			for player in self.green_players:
+				if (player.equip_id == EquipId):
+					if (ammount < 0):
+						# if equip id = highest scorer, find new highest scorer
+						player.score += ammount
+						if (highest_scorer != -1 and highest_scorer != player.equip_id):
+							{}
+						else:
+							self.findHighScorer()
+					else:
+						#easy
+						player.score += ammount
+						if (player.score >= highest_score):
+							self.findHighScorer()
+		
+	def findHighScorer():
+		self.highest_score = 0
+		self.highest_scorer = -1
+		for player in self.green_players:
+			if (player.score > self.highest_score):
+				self.highest_score = player.score
+				self.highest_scorer = player.equip_id
+			elif (player.score == self.highest_score)
+				self.highest_scorer = -1
+		for player in self.red_players:
+			if (player.score > self.highest_score):
+				self.highest_score = player.score
+				self.highest_scorer = player.equip_id
+			elif (player.score == self.highest_score)
+				self.highest_scorer = -1
+
+	def getPlayerFromID (self, EquipId):
+		if (EquipID % 2 == 1):
+			for player in self.red_players:
+				if (player.id == EquipId):
+					return (player.code_name)
+		else:
+			for player in self.green_players:
+				if (player.id == EquipId):
+					return (player.code_name)
+
+		
 	def display_red_players(self):
 		print("Displaying Red Team:")
 		i = 0
