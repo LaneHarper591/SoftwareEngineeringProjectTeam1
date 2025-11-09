@@ -115,7 +115,7 @@ class Model():
 		self.countdown_length = 30
 		self.audio_started = False
 		self.audio_start_at = 17.0
-		self.audio_file = "sounds/python_tracks_Track03.mp3)
+		self.audio_file = "sounds/python_tracks_Track03.mp3"
 		self.audio_volume = 0.8
 
 		# Create Highest Scorer, for the player with the most points at any given time, updated when an event happens (ie, someone tags someone)
@@ -1012,6 +1012,7 @@ while c.keep_going:
 	sleep(sleep_time)
 m.conn.close()
 m.cursor.close()
+
 
 
 
