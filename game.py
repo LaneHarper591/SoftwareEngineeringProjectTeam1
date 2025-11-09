@@ -117,8 +117,6 @@ class Model():
 		self.audio_start_at = 14.8
 		track_num = random.randint(1,8)
 		self.audio_file = f"sounds/Track{track_num:02d}.mp3"
-		print(f"[DEBUG] Selected track: {self.audio_file}")
-
 		self.audio_volume = 0.8
 
 		# Create Highest Scorer, for the player with the most points at any given time, updated when an event happens (ie, someone tags someone)
@@ -1015,6 +1013,7 @@ while c.keep_going:
 	sleep(sleep_time)
 m.conn.close()
 m.cursor.close()
+
 
 
 
