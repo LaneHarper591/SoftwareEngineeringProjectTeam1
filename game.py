@@ -234,6 +234,7 @@ class Model():
 					if (player.equip_id == shooter):
 						player.base = 1
 			Event = "" + str(shootername) + " has successfully captured the enemy base!" 
+			self.udp_tx.send_int(shot)
 			self.updateEvents(Event)
 			return None
 		# check for friendly fire
@@ -305,11 +306,11 @@ class Model():
 	def getPlayerFromID (self, EquipId):
 		if (int(EquipId) % 2 == 1):
 			for player in self.red_players:
-				if (player.id == EquipId):
+				if (player.equip_id == EquipId):
 					return (player.code_name)
 		else:
 			for player in self.green_players:
-				if (player.id == EquipId):
+				if (player.equip_id == EquipId):
 					return (player.code_name)
 
 		
