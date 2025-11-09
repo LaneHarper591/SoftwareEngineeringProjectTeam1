@@ -114,7 +114,7 @@ class Model():
 		self.countdown_timer = 0 
 		self.countdown_length = 30
 		self.audio_started = False
-		self.audio_start_at = 15.0
+		self.audio_start_at = 14.8
 		self.audio_file = "sounds/photon_tracks_Track03.mp3"
 		self.audio_volume = 0.8
 
@@ -1012,6 +1012,7 @@ while c.keep_going:
 	sleep(sleep_time)
 m.conn.close()
 m.cursor.close()
+
 
 
 
