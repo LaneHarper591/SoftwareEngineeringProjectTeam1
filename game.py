@@ -113,7 +113,10 @@ class Model():
 		self.countdown_active = False
 		self.countdown_timer = 0 
 		self.countdown_length = 30
-
+		self.audio_started = False
+		self.audio_start_at = 17.0
+		self.audio_file = "sounds/python_tracks_Track03.mp3)
+		self.audio_volume = 0.8
 
 		# Create Highest Scorer, for the player with the most points at any given time, updated when an event happens (ie, someone tags someone)
 		self.highest_scorer = -1
@@ -141,6 +144,16 @@ class Model():
    	 		# 1) Pre-game countdown
 			if self.countdown_active:
 				self.screen_index = countdown_screen_index
+				elapsed = self.countdown_timer * sleep_time
+				if(not self.audio_started) and (elapsed >= self.audio_start_at):
+					try:
+						pygame.mixer.music.load(self.audio_file)
+						pygame.mixer.music.set_volume(self.audio_volume)
+						pygame.mixer.music.play()
+						self.audio_started = True
+					except Exception as e:
+						print(f"Audio start failed: {e}")
+						
 				if (self.countdown_timer < (self.countdown_length / sleep_time)):
 					self.countdown_timer += 1
 				else:
@@ -391,6 +404,7 @@ class Model():
 		print("Starting countdown...")
 		self.countdown_active = True
 		self.countdown_timer = 0
+		self.audio_started = False
 		self.screen_index = countdown_screen_index
 		self.udp_tx.start_game()
 		# Game code
@@ -986,6 +1000,7 @@ class Controller():
 
 # Running the code
 pygame.init()
+pygame.mixer.init()
 m = Model()
 v = View(m)
 c = Controller(m, v)
@@ -997,6 +1012,7 @@ while c.keep_going:
 	sleep(sleep_time)
 m.conn.close()
 m.cursor.close()
+
 
 
 
