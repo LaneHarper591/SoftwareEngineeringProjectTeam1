@@ -16,7 +16,6 @@ from python_udpclient import PythonUdpClient
 splash_index = 0
 player_screen_index = 1
 game_screen_index = 2
-play_action_index = 3
 countdown_screen_index = 4
 
 
@@ -313,7 +312,6 @@ class Model():
 				if (player.equip_id == EquipId):
 					return (player.code_name)
 
-		
 	def display_red_players(self):
 		print("Displaying Red Team:")
 		i = 0
@@ -351,9 +349,7 @@ class Model():
 		print("Current SQL contents (before insertion of current id):")
 		rows = self.cursor.fetchall()
 		for row in rows:
-			print(row)
-
-		
+			print(row)		
 
 	# Enter code name into database
 	def enter_code_name(self, code_name):
@@ -415,8 +411,6 @@ class Model():
 		self.udp_tx.start_game()
 		# Game code
 
-
-	
 	# Change Network IP
 	def change_network(self, network):
 		self.network = network
@@ -721,7 +715,6 @@ class View():
 
 		# Draw game screen
 		elif (self.model.screen_index == game_screen_index):
-#			use x, y, w, h for Rect
 			# Make background box elements
 			pygame.draw.rect(self.screen, (0, 0, 100), pygame.Rect(25, 525, 950, 150))
 			pygame.draw.rect(self.screen, self.green, pygame.Rect(550, 25, 425, 475))
@@ -823,11 +816,6 @@ class View():
 
 			self.txt_surface = pygame.font.Font(None, 40).render("ACTION FEED" , True, self.white)
 			self.screen.blit(self.txt_surface, ( 50, 535))
-			#code bellow makes text
-				#self.txt_surface = self.popup_font.render("text", True, self.green) 	defines properties
-				#self.screen.blit(self.txt_surface, (10, 10))    						sets position
-			#how to make font
-				#pygame.font.Font(None, self.font_size)
 			
 			# Display return button information at end of game
 			if (self.model.game_over == True):
@@ -840,8 +828,7 @@ class View():
 				self.screen.blit(self.txt_surface, (self.return_to_entry_box.text_box.x + 5, self.return_to_entry_box.text_box.y + 25))  # Position text
 				# Draw text3
 				self.txt_surface = self.block_title_font.render(self.return_to_entry_box.text3, True, self.white)  # Render text
-				self.screen.blit(self.txt_surface, (self.return_to_entry_box.text_box.x + 5, self.return_to_entry_box.text_box.y + 40))  # Position text
-			
+				self.screen.blit(self.txt_surface, (self.return_to_entry_box.text_box.x + 5, self.return_to_entry_box.text_box.y + 40))  # Position text			
 		pygame.display.flip() # Puts images on screen
 
 class Controller():
@@ -1018,36 +1005,3 @@ while c.keep_going:
 	sleep(sleep_time)
 m.conn.close()
 m.cursor.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
