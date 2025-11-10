@@ -394,9 +394,13 @@ class Model():
 			self.red_players[i].id = ""
 			self.red_players[i].code_name = ""
 			self.red_players[i].equip_id = ""
+			self.red_players[i].base = 0
+			self.red_players[i].score = 0
 			self.green_players[i].id = ""
 			self.green_players[i].code_name = ""
 			self.green_players[i].equip_id = ""
+			self.green_players[i].base = 0
+			self.green_players[i].score = 0
 			i += 1
 		self.num_red_players = 0
 		self.num_green_players = 0
