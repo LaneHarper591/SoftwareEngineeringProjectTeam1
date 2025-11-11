@@ -113,7 +113,7 @@ class Model():
 		self.countdown_timer = 0 
 		self.countdown_length = 30
 		self.audio_started = False
-		self.audio_start_at = 14.8
+		self.audio_start_at = 15.3
 		track_num = random.randint(1,8)
 		self.audio_file = f"sounds/Track{track_num:02d}.mp3"
 		self.audio_volume = 0.8
@@ -762,7 +762,7 @@ class View():
 					#display base icon
 					self.screen.blit(self.scaled_base_image, ( red_team_x + 40 , initial_y + 1 + i*20))
 				# Do not display name if it it a flash tick and the player is a highest scorer
-				if self.model.highest_scorer == self.model.red_players[i].equip_id and self.model.game_timer % 25 > 12 :
+				if self.model.highest_scorer == self.model.red_players[i].equip_id and self.model.game_timer % 5 > 2 :
 					red_score = red_score + self.model.red_players[i].score
 					
 				else:
@@ -783,7 +783,7 @@ class View():
 					#display base icon
 					self.screen.blit(self.scaled_base_image, ( green_team_x + 40 , initial_y + 1 + i*20))
 				# do not display highest scorer during flash frames
-				if self.model.highest_scorer == self.model.green_players[i].equip_id and self.model.game_timer % 25 > 12 :
+				if self.model.highest_scorer == self.model.green_players[i].equip_id and self.model.game_timer % 5 > 2 :
 					green_score = green_score + self.model.green_players[i].score
 				else:
 					# prints name
@@ -796,12 +796,12 @@ class View():
 					self.screen.blit(self.txt_surface, (green_team_x + 370, initial_y + i*20))
 				i += 1
 
-			# Display team total scores
-			if red_score > green_score and self.model.game_timer % 25 > 12:
+			# Display team total scores - highest score flashes
+			if red_score > green_score and self.model.game_timer % 5 > 2:
 				#display only green scoreboard
 				self.txt_surface = pygame.font.Font(None, 40).render(str(green_score).zfill(4), True, (0, 150, 0))
 				self.screen.blit(self.txt_surface, ( 885, 40))
-			elif red_score < green_score and self.model.game_timer % 25 > 12:
+			elif red_score < green_score and self.model.game_timer % 5 > 2:
 				#display only red scoreboard
 				self.txt_surface = pygame.font.Font(None, 40).render(str(red_score).zfill(4), True, (150, 0, 0))
 				self.screen.blit(self.txt_surface, ( 360, 40))
