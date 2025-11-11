@@ -844,6 +844,7 @@ class Controller():
 		self.model = model
 		self.view = view
 		self.keep_going = True
+		self.shift = False
 
 	def update(self):
 
@@ -1014,4 +1015,5 @@ while c.keep_going:
 m.conn.close()
 
 m.cursor.close()
+
 
