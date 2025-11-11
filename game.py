@@ -860,7 +860,6 @@ class Controller():
 					# Return to player entry screen after game if F2 is pressed
 					elif (event.key == K_F2) and (self.model.game_over == True):
 						print("Returning to Player Entry Screen")
-						self.model.clear_players()
 						self.game_timer = 0
 						self.model.game_over = False
 					# Start game if F5 is pressed
@@ -1004,4 +1003,5 @@ while c.keep_going:
 
 	sleep(sleep_time)
 m.conn.close()
+
 m.cursor.close()
