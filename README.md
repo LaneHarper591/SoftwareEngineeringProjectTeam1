@@ -11,7 +11,6 @@ Team Members -
 Give permission to execute install.sh (enter 'chmod +x install.sh' in terminal)
 Execute install.sh
 Follow Prompts on Terminal
-*NOTE* - after initial install, code should be executed using command "python3 game.py" in terminal (or executing run.sh); otherwise, Database may receive redundant players 
 
   While running - 
 
