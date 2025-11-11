@@ -402,14 +402,22 @@ class Model():
 		self.num_green_players = 0
 	
 	def start_game(self):
-
 		print("Starting countdown...")
 		self.countdown_active = True
 		self.countdown_timer = 0
 		self.audio_started = False
 		self.screen_index = countdown_screen_index
 		self.udp_tx.start_game()
-		# Game code
+
+	def reset_game(self):
+		i = 0
+		while (i < self.num_players_per_team):
+			self.red_players[i].base = 0
+			self.red_players[i].score = 0
+			self.green_players[i].base = 0
+			self.green_players[i].score = 0
+			i += 1
+
 
 	# Change Network IP
 	def change_network(self, network):
@@ -861,6 +869,7 @@ class Controller():
 					elif (event.key == K_F2) and (self.model.game_over == True):
 						print("Returning to Player Entry Screen")
 						self.game_timer = 0
+						self.model.reset_game()
 						self.model.game_over = False
 					# Start game if F5 is pressed
 					elif (event.key == K_F5) and (self.model.screen_index == player_screen_index):
