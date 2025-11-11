@@ -20,7 +20,7 @@ countdown_screen_index = 4
 
 
 # Sleep  - How long until next frame
-sleep_time = 0.04
+sleep_time = 0.34
 
 # Default Network IP Address
 default_network = "127.0.0.1"
@@ -1005,3 +1005,4 @@ while c.keep_going:
 m.conn.close()
 
 m.cursor.close()
+
