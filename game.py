@@ -108,10 +108,11 @@ class Model():
 		self.game_timer = 0
 		# Length of game (in seconds)
 		self.game_length = 360
-		#countdown (pregame)
+		# Countdown (pregame)
 		self.countdown_active = False
 		self.countdown_timer = 0 
 		self.countdown_length = 30
+		# Initialize audio
 		self.audio_started = False
 		self.audio_start_at = 15.3
 		track_num = random.randint(1,8)
@@ -417,6 +418,9 @@ class Model():
 			self.green_players[i].base = 0
 			self.green_players[i].score = 0
 			i += 1
+		# Change audio track
+		track_num = random.randint(1,8)
+		self.audio_file = f"sounds/Track{track_num:02d}.mp3"
 
 
 	# Change Network IP
